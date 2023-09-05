@@ -1,7 +1,9 @@
 import React from "react";
 
 const Auth = () => {
-    <span>Auth</span>
+    return(
+        <span>Auth</span>
+    );
 };
 
 export default Auth;
