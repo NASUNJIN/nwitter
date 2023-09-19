@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
+import { authService } from "fbase";
+
 
 const Auth = () => {
     const [email, setEmail] = useState("");
@@ -40,7 +43,23 @@ const Auth = () => {
         }
     };
 
+    // '(prev) => !prev' 이전 상태 값을 가져와서 !prev로 계산하여 현재 상태 값을 반전
+    // newAccount가 true라면 !prev는 false, newAccount가 false라면 !prev는 true
     const toggleAccount = () => setNewAccount((prev) => !prev);
+    const onSocialClick = async (event) => {
+        const {
+            target:{ name },
+        } = event;
+        let provider;
+        if (name === "google") {
+            provider = new GoogleAuthProvider();
+        } else if (name === "github"){
+            provider = new GithubAuthProvider();
+        }
+        const auth = getAuth();
+        const data = await signInWithPopup(auth, provider)
+        console.log(data);
+    };
 
     return(
         <div>
@@ -73,8 +92,12 @@ const Auth = () => {
                 {newAccount ? "Sign In" : "Create Account"}
             </span>
             <div>
-                <button>Continue with Google</button>
-                <button>Continue with Github</button>
+                <button onClick={onSocialClick} name="google">
+                    Continue with Google
+                </button>
+                <button onClick={onSocialClick} name="github">
+                    Continue with Github
+                </button>
             </div>
         </div>
     );
